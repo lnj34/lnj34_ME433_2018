@@ -15,26 +15,26 @@
 #pragma config IESO = 0 // no switching clocks
 #pragma config POSCMOD = 10 // high speed crystal mode
 #pragma config OSCIOFNC = 1 // disable secondary osc
-#pragma config FPBDIV = x // divide sysclk freq by 1 for peripheral bus clock
-#pragma config FCKSM = x // do not enable clock switch
-#pragma config WDTPS = x // use slowest wdt
-#pragma config WINDIS = x // wdt no window mode
-#pragma config FWDTEN = x // wdt disabled
-#pragma config FWDTWINSZ = x // wdt window at 25%
+#pragma config FPBDIV = 00 // divide sysclk freq by 1 for peripheral bus clock
+#pragma config FCKSM = 11 // do not enable clock switch
+#pragma config WDTPS = 10100 // use slowest wdt
+#pragma config WINDIS = 1 // wdt no window mode
+#pragma config FWDTEN = 0 // wdt disabled
+#pragma config FWDTWINSZ = 11 // wdt window at 25%
 
 // DEVCFG2 - get the sysclk clock to 48MHz from the 8MHz crystal
-#pragma config FPLLIDIV = x // divide input clock to be in range 4-5MHz
-#pragma config FPLLMUL = x // multiply clock after FPLLIDIV
-#pragma config FPLLODIV = x // divide clock after FPLLMUL to get 48MHz
-#pragma config UPLLIDIV = x // divider for the 8MHz input clock, then multiplied by 12 to get 48MHz for USB
-#pragma config UPLLEN = x // USB clock on
+#pragma config FPLLIDIV = 001 // divide input clock to be in range 4-5MHz
+#pragma config FPLLMUL = 111 // multiply clock after FPLLIDIV
+#pragma config FPLLODIV = 001 // divide clock after FPLLMUL to get 48MHz
+#pragma config UPLLIDIV = 001 // divider for the 8MHz input clock, then multiplied by 12 to get 48MHz for USB
+#pragma config UPLLEN = 0 // USB clock on
 
 // DEVCFG3
 #pragma config USERID = 0 // some 16bit userid, doesn't matter what
-#pragma config PMDL1WAY = x // allow multiple reconfigurations
-#pragma config IOL1WAY = x // allow multiple reconfigurations
-#pragma config FUSBIDIO = x // USB pins controlled by USB module
-#pragma config FVBUSONIO = x // USB BUSON controlled by USB module
+#pragma config PMDL1WAY = 0 // allow multiple reconfigurations
+#pragma config IOL1WAY = 0 // allow multiple reconfigurations
+#pragma config FUSBIDIO = 1 // USB pins controlled by USB module
+#pragma config FVBUSONIO = 1 // USB BUSON controlled by USB module
 
 
 int main() {
