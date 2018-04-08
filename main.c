@@ -2,18 +2,18 @@
 #include<sys/attribs.h>  // __ISR macro
 
 // DEVCFG0
-#pragma config DEBUG = 1 // no debugging 1=disabled?
-#pragma config JTAGEN = 0 // no jtag
-#pragma config ICESEL = 3 // use PGED1 and PGEC1
-#pragma config PWP = 111111111 // no write protect
-#pragma config BWP = 0 // no boot write protect
-#pragma config CP = 0 // no code protect
+#pragma config DEBUG = OFF // no debugging 1=disabled?
+#pragma config JTAGEN = OFF // no jtag
+#pragma config ICESEL = 11 // use PGED1 and PGEC1
+#pragma config PWP = OFF // no write protect
+#pragma config BWP = OFF // no boot write protect
+#pragma config CP = OFF // no code protect
 
 // DEVCFG1
 #pragma config FNOSC = 011 // use primary oscillator with pll
 #pragma config FSOSCEN = 0 // turn off secondary oscillator
 #pragma config IESO = 0 // no switching clocks
-#pragma config POSCMOD = 10 // high speed crystal mode
+#pragma config POSCMOD = HS // high speed crystal mode
 #pragma config OSCIOFNC = 1 // disable secondary osc
 #pragma config FPBDIV = 00 // divide sysclk freq by 1 for peripheral bus clock
 #pragma config FCKSM = 11 // do not enable clock switch
