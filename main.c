@@ -2,9 +2,9 @@
 #include<sys/attribs.h>  // __ISR macro
 
 // DEVCFG0
-#pragma config DEBUG = 10 // no debugging
+#pragma config DEBUG = 1 // no debugging 1=disabled?
 #pragma config JTAGEN = 0 // no jtag
-#pragma config ICESEL = 11 // use PGED1 and PGEC1
+#pragma config ICESEL = 3 // use PGED1 and PGEC1
 #pragma config PWP = 111111111 // no write protect
 #pragma config BWP = 0 // no boot write protect
 #pragma config CP = 0 // no code protect
