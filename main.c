@@ -54,12 +54,12 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-
+    // Define and turn on LED Pin
     TRISAbits.TRISA4 =0;    //PORT A4 is an output port
     TRISBbits.TRISB4=1;     //PORT B4 is an input port
     
     
-    #define LED_OUT      LATDbits.LATD3      // Output LED
+    #define LED_OUT      LATAbits.LATA4 = 1      // Output LED=1
 
     __builtin_enable_interrupts();
 
@@ -67,6 +67,5 @@ int main() {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
     // _CPO_SET_COUNT(0)  //Set count?
-             
     }
 }
