@@ -56,7 +56,9 @@ int main() {
     // do your TRIS and LAT commands here
 
     #define LED_ERR      LATDbits.LATD3      // Error indicator LED
-
+    ANSEL = ANSELH = 0; // All I/O pins are configured as digital
+    PORTA = 0;  // All PORTA pins are cleared
+    TRISAbits.TRISA4 = 0;  //Port A4 is an Output port
     __builtin_enable_interrupts();
 
     while(1) {
