@@ -55,16 +55,18 @@ int main() {
 
     // do your TRIS and LAT commands here
 
-    #define LED_ERR      LATDbits.LATD3      // Error indicator LED
-    ANSEL = ANSELH = 0; // All I/O pins are configured as digital
-    PORTA = 0;  // All PORTA pins are cleared
-    TRISAbits.TRISA4 = 0;  //Port A4 is an Output port
+    TRISAbits.TRISA4 =0;    //PORT A4 is an output port
+    TRISBbits.TRISB4=1;     //PORT B4 is an input port
+    
+    
+    #define LED_OUT      LATDbits.LATD3      // Output LED
+
     __builtin_enable_interrupts();
 
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
-     _CPO_SET_COUNT(0)  //Set count?
+    // _CPO_SET_COUNT(0)  //Set count?
              
     }
 }
