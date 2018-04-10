@@ -79,11 +79,24 @@ int main() {
     // break;       
     //}
      // }
-        if(PORTBbits.RB4 == 0){
-            LATAbits.LATA4 = 0;
+        _CP0_SET_COUNT(0);
+        while (_CP0_GET_COUNT()<12000) {
+                 if(PORTBbits.RB4 == 0){
+            break;
+                    }
         }
-        else{
-            LATAbits.LATA4 = 1;
+        LATAbits.LATA4 = 0;
+        _CP0_SET_COUNT(0);
+        while (_CP0_GET_COUNT()<12000) {
+            
+            if(PORTBbits.RB4 == 0){
+                break;
+            }
         }
-   }
-}
+            if(PORTBbits.RB4 ==0){
+                LATAbits.LATA4 = 0;}
+                else{
+                    LATAbits.LATA4 = 1;
+                }
+            }
+        }
