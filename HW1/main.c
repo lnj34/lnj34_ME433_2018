@@ -66,19 +66,6 @@ int main() {
 
     while(1) {
         LATAbits.LATA4 = 1; // Turn on LED
-	// _CP0_SET_COUNT(0);
-     //while(_CP0_GET_COUNT() < 24000000) ;// to test the PIC timing
-	// remember the core timer runs at half the sysclk
-    // { LATAbits.LATA4=1;
-    
-    //       while(_CP0_GET_COUNT() < 24000) ;// to test the PIC timing
-	// remember the core timer runs at half the sysclk
-    // { LATAbits.LATA4=0;
-    //     if(PORTBbits.RB4 = 0);
-    //         LATAbits.LATA4 = 0;
-    // break;       
-    //}
-     // }
         _CP0_SET_COUNT(0);
         while (_CP0_GET_COUNT()<12000) {
                  if(PORTBbits.RB4 == 0){
