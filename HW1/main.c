@@ -145,7 +145,7 @@ int main() {
         setVoltage(1,(254);
         
         //while(_CP0_GET_COUNT() < 24000000/1000)
-        while(_CP0_GET_COUNT() < 24000000/100000)
+        while(_CP0_GET_COUNT() < 24000000/1000)
         {
             
         }
