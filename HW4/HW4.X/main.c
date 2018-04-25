@@ -49,21 +49,26 @@
 // LDAC (pin 8) -> 3.3V(?) ( LOW both VOUTA and VOUTB are updated at the same time)
 // VREFA & VREFB (Pin 11, 13) -> 3.3 V
 
-#define CS LATBbits.LATB8  
+//B8 is the chip select
+//A1 is SDO1
+//
+
+#define CS LATBbits.LATB2  
 
 void init_SPI(){
     // set up the chip select pin as an output
-    // the chip select pin is used by the sram to indicate
-    // when a command is beginning (clear CS to low) and when it
-    // is ending (set CS high)
-    TRISBbits.TRISB8 = 0;
+    // the chip select pin is used when a command is beginning (clear CS to low)
+    // and when it is ending (set CS high)
+    TRISBbits.TRISB2 = 0;
     CS = 1;
     
-    RPA1Rbits.RPA1R = 0b0011; //set A1 as SDO1
+    RPA1Rbits.RPA1R = 0b0011; //set A1 as SDO1, 0b means binary (0x=hexadecimal)
+    //RPB1Rbits.RPB1R = 3
     
     
     // setup spi0
-    SPI1CON = 0;              // turn off the spi module and reset it
+    SPI1CON = 0;              // turn off the spi module and reset it. This is visible from
+    // the PIC32 data sheet under SPIxCon register (same for the others)
     SPI1BUF;                  // clear the rx buffer by reading from it
     SPI1BRG = 0x1;            // baud rate to 12 MHz [SPI4BRG = (80000000/(2*desired))-1]
     SPI1STATbits.SPIROV = 0;  // clear the overflow bit
@@ -73,7 +78,7 @@ void init_SPI(){
 }
 
 unsigned char spi_io(unsigned char o) {
-  SPI1BUF = o;
+  SPI1BUF = o; //char = 8 bit
   while(!SPI1STATbits.SPIRBF) { // wait to receive the byte
     ;
   }
@@ -81,18 +86,23 @@ unsigned char spi_io(unsigned char o) {
 }
 
 void setVoltage(int channel, int voltage){
-    unsigned short t =0;
-    t = channel << 15;
-    t = t | (0b111 << 12);
-    t = t | (voltage << 2); 
+    unsigned short t =0; //short = 16 bit
+    t = channel << 15; // bit 15 of DAC, choose whether to use DAC A or DAC B
+    // There are 2 DACs inside the chip which can work independently. Shift left
+    //by 15
+    t = t | (0b111 << 12); //bit 12-14 are all set to 1, and shifted left by 12
+    t = t | (voltage << 2); //bit 2-11 are inputted, and are shifted left by 2
+    //bit 0-1 are ignored
     
-    CS = 0;                   // enable the ram
-    spi_io(t>>8);             // ram write status
+    CS = 0;                   // enable the ADC
+    spi_io(t>>8);             // ADC write status. Shift the first 8 bits of t to
+    // the right by 8 (bits 8-15). Then it reads starting from bit 7 to bit 0
     spi_io(t);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
-    CS = 1;                   // finish the command
+    // Take the last 8 bits from t, which are the real right-most bits (bits 0-7)
+    //CS = 1;                   // finish the command
 }
 int main() {
-
+    
     __builtin_disable_interrupts();
 
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -107,13 +117,12 @@ int main() {
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
 
-    // do your TRIS and LAT commands here
     
-    //push bottom as input pin
+    //push button is an input pin
     TRISBbits.TRISB4 = 1;
     
     
-    //led as output pin
+    //led is an output pin
     TRISAbits.TRISA4 = 0;//0 for output, 1 for input
     LATAbits.LATA4 = 1;
     
@@ -121,9 +130,10 @@ int main() {
     
     __builtin_enable_interrupts();
     
-    init_SPI();
+    init_SPI(); //After creating the function init_SPI above, we call it inside
+    //the real function int main(){} to use it (only used once)
     
-    int i = 0;
+    int i = 0; //define a integer i, for the argument of sine
 
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
@@ -133,16 +143,23 @@ int main() {
         
         _CP0_SET_COUNT(0);
         
-        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 / 1000.0 * 10.0);
+        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 *10); //Create
+        //a float (32 bits) and input i as the argument. Iterate and create a full
+        //sine wave
         //float f2 = 512.0 * i 
-        i++;
+        i++; //Increase i by 1
         
         
         
-        setVoltage(0,(int)f1);
-        setVoltage(1,(254));
+        setVoltage(0,(int)f1); //Set channel A, only take the integer part
+        //(before any decimals)
+        setVoltage(1,(256)); //Set channel B to be constant voltage of 256
         
-        while(_CP0_GET_COUNT() < 24000000/1000)
+        //while(_CP0_GET_COUNT() < 24000000/1000)
+        while(_CP0_GET_COUNT() < 24000000/100000) //The timer increases at a rate of
+            //1 per 1/24E6 s. Then wait for 24E 6 of those to get 1 second.
+            // Divide by 1000 to wait 1 millisecond. i.e. wait until GET_COUNT is at
+            //24000
         {
             
         }
