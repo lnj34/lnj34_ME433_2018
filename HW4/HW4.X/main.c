@@ -49,21 +49,18 @@
 // LDAC (pin 8) -> 3.3V(?) ( LOW both VOUTA and VOUTB are updated at the same time)
 // VREFA & VREFB (Pin 11, 13) -> 3.3 V
 
-//B8 is the chip select
-//A1 is SDO1
-//
-
-#define CS LATBbits.LATB2  
+//B3 is the chip select
+//B8 is SDO1
+// 
 
 void init_SPI(){
     // set up the chip select pin as an output
     // the chip select pin is used when a command is beginning (clear CS to low)
     // and when it is ending (set CS high)
-    TRISBbits.TRISB2 = 0;
-    CS = 1;
+    TRISBbits.TRISB3 = 0;
+    LATBbits.LATB3 = 1;
     
-    RPA1Rbits.RPA1R = 0b0011; //set A1 as SDO1, 0b means binary (0x=hexadecimal)
-    //RPB1Rbits.RPB1R = 3
+    RPB8Rbits.RPB8R = 0b0011; //set B8 as SDO1, 0b means binary (0x=hexadecimal)
     
     
     // setup spi0
@@ -94,12 +91,12 @@ void setVoltage(int channel, int voltage){
     t = t | (voltage << 2); //bit 2-11 are inputted, and are shifted left by 2
     //bit 0-1 are ignored
     
-    CS = 0;                   // enable the ADC
+    LATBbits.LATB3 = 0;                   // enable the ADC
     spi_io(t>>8);             // ADC write status. Shift the first 8 bits of t to
     // the right by 8 (bits 8-15). Then it reads starting from bit 7 to bit 0
     spi_io(t);             // sequential mode (mode = 0b01), hold disabled (hold = 0)
     // Take the last 8 bits from t, which are the real right-most bits (bits 0-7)
-    //CS = 1;                   // finish the command
+    LATBbits.LATB3 = 1;                   // finish the command
 }
 int main() {
     
@@ -134,37 +131,43 @@ int main() {
     //the real function int main(){} to use it (only used once)
     
     int i = 0; //define a integer i, for the argument of sine
+    int j = 0; //ramp
 
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
         //set core timer to 0
         
-        
+        LATAbits.LATA4 = 1; //Turn on LED at beginning of loop
         _CP0_SET_COUNT(0);
         
-        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 *10); //Create
+        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 *1E-3); //Create
         //a float (32 bits) and input i as the argument. Iterate and create a full
-        //sine wave
+        //sine wave. i increases by 1 every millisecond, so the freq=10*10E3
         //float f2 = 512.0 * i 
         i++; //Increase i by 1
+            float f2 =(i/200)*512;
+        //    if(i<12000){
+        //        i++;
+        //}
+        //else {
+        //        i--; 
+        //}
         
-        
-        
-        setVoltage(0,(int)f1); //Set channel A, only take the integer part
+        setVoltage(0,(int)f1); //Set channel A, only take the integer part (
+        //should be f1, just changed briefly)
         //(before any decimals)
-        setVoltage(1,(256)); //Set channel B to be constant voltage of 256
+        setVoltage(1,(int)f2); //Set channel B to be constant voltage of 256
         
-        //while(_CP0_GET_COUNT() < 24000000/1000)
-        while(_CP0_GET_COUNT() < 24000000/100000) //The timer increases at a rate of
-            //1 per 1/24E6 s. Then wait for 24E 6 of those to get 1 second.
-            // Divide by 1000 to wait 1 millisecond. i.e. wait until GET_COUNT is at
-            //24000
-        {
+        //while(_CP0_GET_COUNT() < 24000000/1000=24000
+        while(_CP0_GET_COUNT() < 12000){
             
         }
-        
-    }
-    
-    
-}
+        while(_CP0_GET_COUNT() < 24000){ //The timer increases at a rate of
+            //1 per 1/24E6 s. So wait for 24E 6 of those to get 1 second.
+            // Divide by 1000 to wait 1 millisecond. i.e. wait until GET_COUNT is at
+            //24000 is the same as wait 1 millisecond
+            LATAbits.LATA4 = 0;
+        }
+            } //end while loop
+            } //end int(main)
