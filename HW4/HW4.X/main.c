@@ -141,12 +141,12 @@ int main() {
         LATAbits.LATA4 = 1; //Turn on LED at beginning of loop
         _CP0_SET_COUNT(0);
         
-        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 *1E-3); //Create
+        float f1 = 512.0 + 512.0 * sin(i * 2.0 * 3.14 *1E-2); //Create
         //a float (32 bits) and input i as the argument. Iterate and create a full
-        //sine wave. i increases by 1 every millisecond, so the freq=10*10E3
+        //sine wave. i increases by 1 every millisecond, so the freq=1E-2
         //float f2 = 512.0 * i 
         i++; //Increase i by 1
-            float f2 =(i/200)*512;
+            float f2 =512+512*(i/200);
         //    if(i<12000){
         //        i++;
         //}
