@@ -25,5 +25,7 @@ void init_expander(void);                           //initialize  I/O expander
 void set_expander(unsigned char, unsigned char);            //set pin config
 unsigned char get_expander(unsigned char);         
 
+void init_accelerometer(void); //initial accelerometer 
+void I2C_read_multiple(unsigned char address, unsigned char register, unsigned char * data, int length) //read multiple register in a row
 #endif	/* I2C_MASTER_NOINT_H */
 

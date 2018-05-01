@@ -68,16 +68,29 @@ void set_expander(unsigned char address, unsigned char val){
 }
 
 unsigned char get_expander(unsigned char address){
+    unsigned char b=0;
+    int i, start;
     i2c_master_start();
     i2c_master_send(SLAVE_ADDR << 1);  //writing
     i2c_master_send(address);          //specifying register address
     i2c_master_restart();   
     
     i2c_master_send((SLAVE_ADDR << 1) | 1); //reading from register
-    char info = i2c_master_recv();    //storing byte read into pic 
-    i2c_master_ack(1);                //let slave know read successful
-    i2c_master_stop();
-    
+    for(i=0;i<start;i++){
+        char info = i2c_master_recv();    //storing byte read into pic 
+        i2c_master_ack(1);                //let slave know read successful
+        i2c_master_stop();
+    }
     return info;
 }
 
+void init_accelerometer(){
+    set_expander(0x10,0b10000010);//initial CTRL1_XL(0x10). Sample rate to 1.66 kHz, with 2g sensitivity, and 100 Hz filter
+    set_expander(0x11,0b10001000);//initial CTRL2_G(0x11). Sample rate to 1.66 kHz, with 1000 dps sensitivity
+    set_expander(0x12,0b00000100);//initial CTRL3_C(0x12). Enable multiple reading
+}
+
+void I2C_read_multiple(unsigned char address, unsigned char registerad, signed short * data, int length){
+    get_expander(registerad);
+    
+}
