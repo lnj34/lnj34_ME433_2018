@@ -247,3 +247,20 @@ void LCD_clearScreen(unsigned short color) {
 		LCD_data16(color);
 	}
 }
+void draw_Char(int x,int y,int asc){
+    int i = 0; 
+    int j = 0; 
+    for (i=0; i < 5 ; i++){ //Go through each of 5 columns of pixels
+        for (j = 0; j < 8; j++){ //Go through each of 8 rows of pixels
+            char a = ASCII[asc][4-i]; //ASCII table - 8 = real number (48=40)
+            int vala = a>>7-j&1; // start masking from the largest bit
+            if(vala==1){
+                LCD_drawPixel(x+i,y+j,BLACK);
+            }
+            else {
+                LCD_drawPixel(x+i,y+j,WHITE);
+            }
+                
+            }
+        }
+    }
