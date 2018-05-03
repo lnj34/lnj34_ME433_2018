@@ -175,5 +175,6 @@ void LCD_drawPixel(unsigned short, unsigned short, unsigned short); // set the x
 void LCD_setAddr(unsigned short, unsigned short, unsigned short, unsigned short); // set the memory address you are writing to
 void LCD_clearScreen(unsigned short); // set the color of every pixel
 void draw_Char(int,int,int); //Draw char using drawPixel fxn
+void draw_String(int,int,int);//Draw string using array of numbers representing letters
 
 #endif

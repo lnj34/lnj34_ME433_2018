@@ -264,3 +264,18 @@ void draw_Char(int x,int y,int asc){
             }
         }
     }
+void draw_String(int x,int y, int* Letters){
+    int i = 0;
+    //int Letters [] ={44,45,46};
+    int n = sizeof(Letters)/sizeof(Letters[0]);
+        for(i = 0 ; i < n ; i++){
+            if( x-5*i < 128){
+            draw_Char(x-6*i,y,Letters[i]);
+            }
+            else { 
+                break;
+            }
+            
+            
+        }
+}

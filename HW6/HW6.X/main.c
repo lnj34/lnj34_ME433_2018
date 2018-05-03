@@ -68,7 +68,7 @@ int main() {
     int i = 0;
     int n = sizeof(Letters)/sizeof(Letters[0]);
         for(i = 0 ; i < n ; i++){
-            if( x-5*i < 128){
+            if( x-5*i < 128 & y-8*i<256){
             draw_Char(x-6*i,y,Letters[i]);
             }
             else { 
@@ -77,6 +77,31 @@ int main() {
             
             
         }
+    draw_String(x,y, Letters);
+    int j = 0;
+    int k = 0;
+    unsigned short xpos = 125;
+    unsigned short ypos = 300;
+//    _CP0_SET_COUNT(0);
+//    while(1){
+//        while(j<10){
+//            j++;
+//            while(k<100){
+//                k++;
+//                
+//                draw_Char(x+5*n,y,ASCII[jk])
+//            }
+//        }
+//        draw_Pixel(xpos-j,ypos,92);
+//        j++;
+//        while(_CP0_GET_COUNT()<100000){
+//            ;
+//        }
+        
+        
+    //}
+    
+    //91 is the | character
     }
     
     
