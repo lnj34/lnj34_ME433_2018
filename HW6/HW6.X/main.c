@@ -64,7 +64,7 @@ int main() {
     unsigned short x = 100; // the initial position starts at (0,0) at the
     //bottom right corner, and positive x is to the left, and positive y is up
     unsigned short y = 100;
-    int Letters[] = {40,37,44,44,47,12,44,47,46,39,13,36,41,35,43};
+    int Letters[] = {40,37,44,44,47,0,55,47,50,44,36,1};
     int i = 0;
     int n = sizeof(Letters)/sizeof(Letters[0]);
         for(i = 0 ; i < n ; i++){
