@@ -2,9 +2,10 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
+        <Harmony xmlns="Harmony" MHC="true"/>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>HW6</name>
-            <creation-uuid>656b38e9-12f3-419d-b0d5-6197441a85b7</creation-uuid>
+            <name>HW9</name>
+            <creation-uuid>e54023e9-3948-44ef-bf6f-29d8b223e555</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>

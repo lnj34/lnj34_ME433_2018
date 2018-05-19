@@ -1,9 +1,5 @@
-// code for ST7735 on the PIC32
-// adapted from https://github.com/sumotoy/TFT_ST7735
-// and https://github.com/adafruit/Adafruit-ST7735-Library
-
-#ifndef ST7735_H__
-#define ST7735_H__
+#ifndef ST7735_H
+#define	ST7735_H
 
 // lookup table for all of the ascii characters
 static const char ASCII[96][5] = {
@@ -171,10 +167,12 @@ void LCD_command(unsigned char); // send a command to the LCD
 void LCD_data(unsigned char); // send data to the LCD
 void LCD_data16(unsigned short); // send 16 bit data to the LCD
 void LCD_init(void); // send the initializations to the LCD
-void LCD_drawPixel(unsigned short, unsigned short, unsigned short); // set the x,y pixel to a color
 void LCD_setAddr(unsigned short, unsigned short, unsigned short, unsigned short); // set the memory address you are writing to
 void LCD_clearScreen(unsigned short); // set the color of every pixel
-void draw_Char(int,int,int); //Draw char using drawPixel fxn
-void draw_String(int,int,int);//Draw string using array of numbers representing letters
 
-#endif
+void LCD_drawPixel(unsigned short, unsigned short, unsigned short); // set the x,y pixel to a color
+void LCD_drawChar(unsigned short, unsigned short, unsigned char, unsigned short, unsigned short);// draw a character
+void LCD_drawString(unsigned short, unsigned short, char*, unsigned short, unsigned short);// draw a string
+void LCD_drawProgressBar(unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short);//draw a progress bar
+
+#endif	/* ST7735_H */

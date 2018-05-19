@@ -5,11 +5,11 @@
 // pin connections:
 // VCC - 3.3V
 // GND - GND
-// CS - B7 = pin 16 (2nd from bottom on the right)
+// CS - B7
 // RESET - 3.3V
-// A0 - B15 = pin 26 (3rd from the top on the right)
-// SDA - A1 = pin 3
-// SCK - B14 = pin 25
+// A0 - B15
+// SDA - A1
+// SCK - B14
 // LED - 3.3V
 
 // B8 is turned into SDI1 but is not used or connected to anything
@@ -247,35 +247,46 @@ void LCD_clearScreen(unsigned short color) {
 		LCD_data16(color);
 	}
 }
-void draw_Char(int x,int y,int asc){
-    int i = 0; 
-    int j = 0; 
-    for (i=0; i < 5 ; i++){ //Go through each of 5 columns of pixels
-        for (j = 0; j < 8; j++){ //Go through each of 8 rows of pixels
-            char a = ASCII[asc][4-i]; //ASCII table - 8 = real number (48=40)
-            int vala = a>>7-j&1; // start masking from the largest bit
-            if(vala==1){
-                LCD_drawPixel(x+i,y+j,BLACK);
+
+void LCD_drawChar(unsigned short x, unsigned short y, unsigned char mess, unsigned short color1, unsigned short color2){
+    char row = mess - 0x20;
+    char col;
+    for(col = 0; col < 5; col++){ // 5 pixels per col
+        if ((x + col) < 128 && x > 0){ 
+            char pixel = ASCII[row][col];
+            int i;
+            for(i = 0; i < 8; i++){
+                if(y + i < 160 && y + i > 0){
+                    if (pixel >> i & 1)
+                        LCD_drawPixel(x+col, y+i, color1);
+                    else
+                        LCD_drawPixel(x+col, y+i, color2);
+                }
             }
-            else {
-                LCD_drawPixel(x+i,y+j,WHITE);
-            }
-                
-            }
+        }   
+    }
+}
+
+void LCD_drawString(unsigned short x, unsigned short y, char* message, unsigned short color1, unsigned short color2){
+    int i =0;
+    while(message[i] != 0){
+        LCD_drawChar(x, y, message[i], color1, color2);
+        i++;
+        x+=5;
+    }
+}
+
+
+void LCD_drawProgressBar(unsigned short x, unsigned short y, unsigned short h, unsigned short len1, unsigned short color1, unsigned short len2, unsigned short color2){
+    int i, j;
+    for(i=0; i<len2; i++){
+        for(j=0; j<h; j++){
+            if(i<len1)
+                LCD_drawPixel(x+i, y+j, color1);
+            else
+                LCD_drawPixel(x+i, y+j, color2);
         }
     }
-void draw_String(int x,int y, int* Letters){
-    int i = 0;
-    //int Letters [] ={44,45,46};
-    int n = sizeof(Letters)/sizeof(Letters[0]);
-        for(i = 0 ; i < n ; i++){
-            if( x-5*i < 128){
-            draw_Char(x-6*i,y,Letters[i]);
-            }
-            else { 
-                break;
-            }
-            
-            
-        }
+    
+    
 }

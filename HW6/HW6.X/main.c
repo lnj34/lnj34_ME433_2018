@@ -1,5 +1,6 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
+#include<stdio.h>
 #include<math.h>
 #include"ST7735.h"
 
@@ -40,9 +41,8 @@
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
 
-
 int main() {
-    
+
     __builtin_disable_interrupts();
 
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -56,65 +56,40 @@ int main() {
 
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
-    LCD_init(); // send the initializations to the LCD
-    LCD_clearScreen(WHITE);
+
+    SPI1_init();   //initialize SPI
+    LCD_init();    //initialize LCD
+    
     
     __builtin_enable_interrupts();
-    LCD_clearScreen(WHITE);
-    unsigned short x = 100; // the initial position starts at (0,0) at the
-    //bottom right corner, and positive x is to the left, and positive y is up
-    unsigned short y = 100;
-    int Letters[] = {40,37,44,44,47,0,55,47,50,44,36,1};
-    int i = 0;
-    int n = sizeof(Letters)/sizeof(Letters[0]);
-        for(i = 0 ; i < n ; i++){
-            if( x-5*i < 128 & y-8*i<256){
-            draw_Char(x-6*i,y,Letters[i]);
-            }
-            else { 
-                break;
-            }
-            
-            
-        }
-    draw_String(x,y, Letters);
-    int j = 0;
-    int k = 0;
-    unsigned short xpos = 125;
-    unsigned short ypos = 300;
-//    _CP0_SET_COUNT(0);
-//    while(1){
-//        while(j<10){
-//            j++;
-//            while(k<100){
-//                k++;
-//                
-//                draw_Char(x+5*n,y,ASCII[jk])
-//            }
-//        }
-//        draw_Pixel(xpos-j,ypos,92);
-//        j++;
-//        while(_CP0_GET_COUNT()<100000){
-//            ;
-//        }
-        
-        
-    //}
+    LCD_clearScreen(YELLOW);
     
-    //91 is the | character
+    
+    int count= 0;
+    float fps = 0;
+    char message[30];
+    
+    while(1){
+        _CP0_SET_COUNT(0);
+        sprintf(message, "Hello world %3d", count);
+        LCD_drawString(28, 32, message, BLUE, YELLOW);
+        LCD_drawProgressBar(28, 60, 5, (count*75/100), BLUE, 75, WHITE);
+        
+        sprintf(message, "($_$)");
+        LCD_drawString(50, 80, message, BLUE, YELLOW);
+        
+        sprintf(message, "FPS: %.2f", fps);
+        LCD_drawString(28, 100, message, BLUE, YELLOW);
+        fps = 24000000./_CP0_GET_COUNT();
+        
+        
+        while(_CP0_GET_COUNT() < 24000000/10){//Loop at 10Hz
+            ;
+        }
+        count++;
+        if(count == 100)
+            count = 0;
     }
     
     
-//    for (i = 0; i = 5; i++){
-//        for(j = 0; j = 8; j++)
-//            int xpos = x+i;
-//            int ypos = y+j;
-//            int ascbit =         
-//            LCD_drawPixel(x,y,BLACK);
-//        ;
-//    }
-    
-    
-    //128 x 160
-    //while(1) {
-         //end int(main)
+}
