@@ -300,8 +300,8 @@ Discarded input sections
 
  .reginfo       0x00000000       0x18 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\debug-exception-return.o
  .reginfo       0x00000000       0x18 build/default/production/main.o
- .reginfo       0x00000000       0x18 build/default/production/ST7735.o
  .reginfo       0x00000000       0x18 build/default/production/i2C_master_imu.o
+ .reginfo       0x00000000       0x18 build/default/production/ST7735.o
  .reginfo       0x00000000       0x18 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
  .discard       0x00000000       0xb0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
  .reginfo       0x00000000       0x18 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\pic32_software_reset.o
@@ -402,8 +402,8 @@ Linker script and memory map
 LOAD c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B/crt0_mips32r2.o
 LOAD c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\debug-exception-return.o
 LOAD build/default/production/main.o
-LOAD build/default/production/ST7735.o
 LOAD build/default/production/i2C_master_imu.o
+LOAD build/default/production/ST7735.o
                 0x00000001                __MPLAB_BUILD = 0x1
 LOAD c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
 LOAD c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\pic32_software_reset.o
@@ -994,8 +994,8 @@ END GROUP
 .mdebug.abi32   0xa000000c        0x0
  *(.mdebug.abi32)
  .mdebug.abi32  0xa000000c        0x0 build/default/production/main.o
- .mdebug.abi32  0xa000000c        0x0 build/default/production/ST7735.o
  .mdebug.abi32  0xa000000c        0x0 build/default/production/i2C_master_imu.o
+ .mdebug.abi32  0xa000000c        0x0 build/default/production/ST7735.o
  .mdebug.abi32  0xa000000c        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .mdebug.abi32  0xa000000c        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .mdebug.abi32  0xa000000c        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1059,8 +1059,8 @@ END GROUP
  *(.comment)
  .comment       0x00000000       0x3c build/default/production/main.o
                                  0x3d (size before relaxing)
- .comment       0x00000000       0x3d build/default/production/ST7735.o
  .comment       0x00000000       0x3d build/default/production/i2C_master_imu.o
+ .comment       0x00000000       0x3d build/default/production/ST7735.o
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .comment       0x00000000       0x3d c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1106,9 +1106,9 @@ END GROUP
  .debug_aranges
                 0x00000000       0x20 build/default/production/main.o
  .debug_aranges
-                0x00000020       0x20 build/default/production/ST7735.o
+                0x00000020       0x20 build/default/production/i2C_master_imu.o
  .debug_aranges
-                0x00000040       0x20 build/default/production/i2C_master_imu.o
+                0x00000040       0x20 build/default/production/ST7735.o
  .debug_aranges
                 0x00000060       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_aranges
@@ -1136,8 +1136,8 @@ END GROUP
 .debug_info     0x00000000     0x34c4
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x568 build/default/production/main.o
- .debug_info    0x00000568     0x1178 build/default/production/ST7735.o
- .debug_info    0x000016e0      0x823 build/default/production/i2C_master_imu.o
+ .debug_info    0x00000568      0x823 build/default/production/i2C_master_imu.o
+ .debug_info    0x00000d8b     0x1178 build/default/production/ST7735.o
  .debug_info    0x00001f03       0xf3 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_info    0x00001ff6       0xcc c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_info    0x000020c2       0xd4 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1152,8 +1152,8 @@ END GROUP
 .debug_abbrev   0x00000000      0x79d
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0xed build/default/production/main.o
- .debug_abbrev  0x000000ed      0x186 build/default/production/ST7735.o
- .debug_abbrev  0x00000273      0x16b build/default/production/i2C_master_imu.o
+ .debug_abbrev  0x000000ed      0x16b build/default/production/i2C_master_imu.o
+ .debug_abbrev  0x00000258      0x186 build/default/production/ST7735.o
  .debug_abbrev  0x000003de       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_abbrev  0x00000406       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_abbrev  0x0000042e       0x28 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1168,8 +1168,8 @@ END GROUP
 .debug_line     0x00000000      0xd05
  *(.debug_line)
  .debug_line    0x00000000      0x167 build/default/production/main.o
- .debug_line    0x00000167      0x351 build/default/production/ST7735.o
- .debug_line    0x000004b8      0x18f build/default/production/i2C_master_imu.o
+ .debug_line    0x00000167      0x18f build/default/production/i2C_master_imu.o
+ .debug_line    0x000002f6      0x351 build/default/production/ST7735.o
  .debug_line    0x00000647       0xa5 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_line    0x000006ec       0x92 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_line    0x0000077e       0x96 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1185,8 +1185,8 @@ END GROUP
 .debug_frame    0x00000000      0x514
  *(.debug_frame)
  .debug_frame   0x00000000       0x2c build/default/production/main.o
- .debug_frame   0x0000002c      0x214 build/default/production/ST7735.o
- .debug_frame   0x00000240      0x160 build/default/production/i2C_master_imu.o
+ .debug_frame   0x0000002c      0x160 build/default/production/i2C_master_imu.o
+ .debug_frame   0x0000018c      0x214 build/default/production/ST7735.o
  .debug_frame   0x000003a0       0x2c c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_frame   0x000003cc       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_frame   0x000003ec       0x20 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1201,8 +1201,8 @@ END GROUP
 .debug_str      0x00000000       0x16
  *(.debug_str)
  .debug_str     0x00000000        0x0 build/default/production/main.o
- .debug_str     0x00000000        0xe build/default/production/ST7735.o
- .debug_str     0x0000000e        0x8 build/default/production/i2C_master_imu.o
+ .debug_str     0x00000000        0x8 build/default/production/i2C_master_imu.o
+ .debug_str     0x00000008        0xe build/default/production/ST7735.o
  .debug_str     0x00000016        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .debug_str     0x00000016        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-reset.o)
  .debug_str     0x00000016        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-on-bootstrap.o)
@@ -1262,9 +1262,9 @@ END GROUP
  .gnu.attributes
                 0x00000000       0x10 build/default/production/main.o
  .gnu.attributes
-                0x00000010       0x10 build/default/production/ST7735.o
+                0x00000010       0x10 build/default/production/i2C_master_imu.o
  .gnu.attributes
-                0x00000020       0x10 build/default/production/i2C_master_imu.o
+                0x00000020       0x10 build/default/production/ST7735.o
  .gnu.attributes
                 0x00000030       0x10 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib\libpic32.a(default-bootstrap-exception-handler.o)
  .gnu.attributes
@@ -1783,16 +1783,16 @@ LOAD data_init
  .data          0x00000000        0x0 c:/program files (x86)/microchip/xc32/v2.05/bin/bin/../../lib/gcc/pic32mx/4.8.3/../../../../pic32mx/lib/./proc/32MX250F128B\default_isr_vectors.o
 
 .bss%z151       0x00000000        0x0
- .bss           0x00000000        0x0 build/default/production/i2C_master_imu.o
-
-.data%z152      0x00000000        0x0
- .data          0x00000000        0x0 build/default/production/i2C_master_imu.o
-
-.bss%z153       0x00000000        0x0
  .bss           0x00000000        0x0 build/default/production/ST7735.o
 
-.data%z154      0x00000000        0x0
+.data%z152      0x00000000        0x0
  .data          0x00000000        0x0 build/default/production/ST7735.o
+
+.bss%z153       0x00000000        0x0
+ .bss           0x00000000        0x0 build/default/production/i2C_master_imu.o
+
+.data%z154      0x00000000        0x0
+ .data          0x00000000        0x0 build/default/production/i2C_master_imu.o
 
 .bss%z155       0x00000000        0x0
  .bss           0x00000000        0x0 build/default/production/main.o
