@@ -191,4 +191,6 @@ build/default/production/_ext/639803181/sys_clk_pic32mx.o:  \
  ../../../../../../../../../microchip/harmony/v2_05_01/framework/usb/usb_device_cdc.h  \
  ../../../../../../../../../microchip/harmony/v2_05_01/framework/usb/src/usb_device_function_driver.h  \
  ../../../../../../../../../microchip/harmony/v2_05_01/framework/usb/usb_cdc.h  \
- ../src/app.h 
+ ../src/app.h  \
+../src/ST7735.h  \
+../src/I2C_master_imu.h 
