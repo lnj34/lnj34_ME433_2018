@@ -480,22 +480,13 @@ void APP_Tasks(void) {
             signed short acceX = (data[9] << 8) | data[8];
             signed short acceY = (data[11] << 8) | data[10];
             signed short acceZ = (data[13] << 8) | data[12];
-            
-            sprintf(address, "acceX: %d", acceX);
-            LCD_drawString(5, 20, address, RED, YELLOW);
-            sprintf(address, "acceY: %d", acceY);
-            LCD_drawString(5, 30, address, RED, YELLOW);
             sprintf(address, "acceZ: %d", acceZ);
             LCD_drawString(5, 40, address, RED, YELLOW);
-            sprintf(address, "gyroX: %d", gyroX);
-            LCD_drawString(5, 50, address, RED, YELLOW);
-            sprintf(address, "gyroY: %d", gyroY);
-            LCD_drawString(5, 60, address, RED, YELLOW);
-            sprintf(address, "gyroZ: %d", gyroZ);
-            LCD_drawString(5, 70, address, RED, YELLOW);
+            unsigned char maf[4];
+            
 
                 if(appData.readBuffer[0] == 'r'){
-                    len = sprintf(dataOut,"%d %d %d %d %d %d %d\r\n", i, acceX, acceY, acceZ,gyroX,gyroY,gyroZ);
+                    len = sprintf(dataOut,"%d %d \r\n", i, acceZ);
                     if(i>100){
                         i = 0;
                         appData.readBuffer[0] = 0x00;
