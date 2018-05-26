@@ -1,0 +1,1 @@
+It seems like the best filter is the IIR, with weighting coefficients of 0.75 and 0.25 for old and new data respectively.
