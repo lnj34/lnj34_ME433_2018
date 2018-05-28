@@ -1,7 +1,4 @@
 package ljapp.camera_app;
-
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 // libraries
 
 import android.Manifest;
@@ -22,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -41,20 +37,39 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Paint paint1 = new Paint();
     private TextView mTextView;
     SeekBar myControl;
+    TextView myTextView;
+
+    private void setMyControlListener() {
+        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            int progressChanged = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChanged = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 
     static long prevtime = 0; // for FPS calculation
 
     protected void onCreate(Bundle savedInstanceState) {
+        myControl = (SeekBar) findViewById(R.id.seek1);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
-        myControl = (SeekBar) findViewById(R.id.seek1);
-
-        myTextView = (TextView) findViewById(R.id.textView01);
-        myTextView.setText("Threshold");
-        setMyControlListener();
 
         mTextView = (TextView) findViewById(R.id.cameraStatus);
+        setMyControlListener();
 
         // see if the app has permission to use the camera
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -74,7 +89,10 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             mTextView.setText("no camera permissions");
         }
 
+
+
     }
+
 
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mCamera = Camera.open();
@@ -103,28 +121,6 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         return true;
     }
 
-    private void setMyControlListener() {
-        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-            int progressChanged = 0;
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChanged = progress;
-                myTextView.setText("The threshold is: "+progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-    }
-
     // the important function
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         // every time there is a new Camera preview frame
@@ -132,20 +128,26 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-            int thresh = 0; // comparison value
-            int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
-            int startY = 200; // which row in the bitmap to analyze to read
-            bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            int thresha = 10; // must exceed thresha for green
+            int threshb = 10; // must be below threshold for blue and red
+            for (int j = 0; j < bmp.getHeight(); j++) {
+                int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+                int startY = j; // which row in the bitmap to analyze to read
+                bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
-            // in the row, see if there is more green than red
-            for (int i = 0; i < bmp.getWidth(); i++) {
-                if ((green(pixels[i]) - red(pixels[i])) > thresh) {
-                    pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                // in the row, see if there is more green than red
+                for (int i = 0; i < bmp.getWidth(); i++) {
+                    if ((green(pixels[i]) - red(pixels[i])) > thresha) {
+                        if ((blue(pixels[i])) < threshb) {
+
+                            pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                        }
+                    }
                 }
-            }
 
-            // update the row
-            bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+                // update the row
+                bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            }
         }
 
         // draw a circle at some position
@@ -163,6 +165,4 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         mTextView.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
     }
-
-
 }
