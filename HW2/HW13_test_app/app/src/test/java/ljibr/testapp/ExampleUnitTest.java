@@ -1,4 +1,4 @@
-package ljapp.camera_app;
+package ljibr.testapp;
 
 import org.junit.Test;
 

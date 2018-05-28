@@ -1,4 +1,4 @@
-package ljapp.camera_app;
+package ljibr.hw13;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ljapp.camera_app", appContext.getPackageName());
+        assertEquals("ljibr.hw13", appContext.getPackageName());
     }
 }
