@@ -50,7 +50,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <stdio.h>
 #include <xc.h>
 
-
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -61,6 +60,12 @@ uint8_t APP_MAKE_BUFFER_DMA_READY dataOut[APP_READ_BUFFER_SIZE];
 uint8_t APP_MAKE_BUFFER_DMA_READY readBuffer[APP_READ_BUFFER_SIZE];
 int len, i = 0;
 int startTime = 0; // to remember the loop time
+
+//Global variables to store received characters
+char rx[64]; // the raw data
+int rxPos = 0; // how much data has been stored
+int gotRx = 0; // the flag
+int rxVal = 0; // a place to store the int that was received
 
 // *****************************************************************************
 /* Application Data
@@ -157,7 +162,7 @@ USB_DEVICE_CDC_EVENT_RESPONSE APP_USBDeviceCDCEventHandler
             break;
 
         case USB_DEVICE_CDC_EVENT_CONTROL_TRANSFER_DATA_RECEIVED:
-            
+
             /* The data stage of the last control transfer is
              * complete. For now we accept all the data */
 
@@ -330,32 +335,8 @@ void APP_Initialize(void) {
     appData.readBuffer = &readBuffer[0];
 
     /* PUT YOUR LCD, IMU, AND PIN INITIALIZATIONS HERE */
-    __builtin_disable_interrupts();
-
-    // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
-    __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
-
-    // 0 data RAM access wait states
-    BMXCONbits.BMXWSDRM = 0x0;
-
-    // enable multi vector interrupts
-    INTCONbits.MVEC = 0x1;
-
-    // disable JTAG to get pins back
-    DDPCONbits.JTAGEN = 0;
-    
-    SPI1_init();
-    i2c_master_setup();
-    init_expander();  
-    LCD_init();
-    
-    LCD_clearScreen(YELLOW);
-    
-    __builtin_enable_interrupts();
 
     startTime = _CP0_GET_COUNT();
-    
-    
 }
 
 /******************************************************************************
@@ -397,6 +378,7 @@ void APP_Tasks(void) {
             break;
 
         case APP_STATE_SCHEDULE_READ:
+            
 
             if (APP_StateReset()) {
                 break;
@@ -409,11 +391,29 @@ void APP_Tasks(void) {
             if (appData.isReadComplete == true) {
                 appData.isReadComplete = false;
                 appData.readTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
+                
+                int ii = 0;
+                // loop thru the characters in the buffer
+                while (appData.readBuffer[ii] != 0) {
+                    // if you got a newline
+                    if (appData.readBuffer[ii] == '\n' || appData.readBuffer[ii] == '\r') {
+                        rx[rxPos] = 0; // end the array
+                        sscanf(rx, "%d", &rxVal); // get the int out of the array
+                        gotRx = 1; // set the flag
+                        break; // get out of the while loop
+                    } else if (appData.readBuffer[ii] == 0) {
+                        break; // there was no newline, get out of the while loop
+                    } else {
+                        // save the character into the array
+                        rx[rxPos] = appData.readBuffer[ii];
+                        rxPos++;
+                        ii++;
+                    }
+                }
 
                 USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0,
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
-                    
 
                         /* AT THIS POINT, appData.readBuffer[0] CONTAINS A LETTER
                         THAT WAS SENT FROM THE COMPUTER */
@@ -440,7 +440,7 @@ void APP_Tasks(void) {
              * The isReadComplete flag gets updated in the CDC event handler. */
 
              /* WAIT FOR 5HZ TO PASS OR UNTIL A LETTER IS RECEIVED */
-            if (appData.isReadComplete || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 10)) {
+            if (gotRx || _CP0_GET_COUNT() - startTime > (48000000 / 2 / 5)) {
                 appData.state = APP_STATE_SCHEDULE_WRITE;
             }
 
@@ -459,82 +459,29 @@ void APP_Tasks(void) {
             appData.writeTransferHandle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
-            
-            /*SEND TEXT TO THE COMPUTER IN dataOut
-            AND REMEMBER THE NUMBER OF CHARACTERS IN len */
-
-            
-            unsigned char data[13];
-            char address[100];
-        
-            //get WHO AM I
-            sprintf(address, "WHOAMI: %d", get_expander(WHO_AM_I));
-            LCD_drawString(5, 10, address, RED, YELLOW);
-            
-            
-            I2C_read_multiple(SLAVE_ADDR, OUT_TEMP_L, data, 14);
-            signed short temp = (data[1] << 8)| data[0];
-            signed short gyroX = (data[3] << 8) | data[2];
-            signed short gyroY = (data[5] << 8) | data[4];
-            signed short gyroZ = (data[7] << 8) | data[6];
-            signed short acceX = (data[9] << 8) | data[8];
-            signed short acceY = (data[11] << 8) | data[10];
-            signed short acceZ = (data[13] << 8) | data[12];
-            
-            sprintf(address, "acceX: %d", acceX);
-            LCD_drawString(5, 20, address, RED, YELLOW);
-            sprintf(address, "acceY: %d", acceY);
-            LCD_drawString(5, 30, address, RED, YELLOW);
-            sprintf(address, "acceZ: %d", acceZ);
-            LCD_drawString(5, 40, address, RED, YELLOW);
-            sprintf(address, "gyroX: %d", gyroX);
-            LCD_drawString(5, 50, address, RED, YELLOW);
-            sprintf(address, "gyroY: %d", gyroY);
-            LCD_drawString(5, 60, address, RED, YELLOW);
-            sprintf(address, "gyroZ: %d", gyroZ);
-            LCD_drawString(5, 70, address, RED, YELLOW);
-
-                if(appData.readBuffer[0] == 'r'){
-                    len = sprintf(dataOut,"%d %d %d %d %d %d %d\r\n", i, acceX, acceY, acceZ,gyroX,gyroY,gyroZ);
-                    if(i>100){
-                        i = 0;
-                        appData.readBuffer[0] = 0x00;
-                        len = sprintf(dataOut, "\n**********************\r\n");
-                    }
-                    else{
-                    i++;
-                    }
-                }
-                else{
-                    //SEND A BLANK PACKET
-                    len = 1; 
-                    dataOut[0] = 0;
-                }
-            
-            
-            
 
             /* PUT THE TEXT YOU WANT TO SEND TO THE COMPUTER IN dataOut
             AND REMEMBER THE NUMBER OF CHARACTERS IN len */
             /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
-            //len = sprintf(dataOut, "%d\r\n", i);
-            //i++; // increment the index so we see a change in the text
+            len = sprintf(dataOut, "%d\r\n", i);
+            i++; // increment the index so we see a change in the text
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
-            
-            
-            
-            if (appData.isReadComplete) {
+        if (gotRx) {
+                len = sprintf(dataOut, "got: %d\r\n", rxVal);
+                i++;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
-                        appData.readBuffer, 1,
+                        dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-            }
-            /* ELSE SEND THE MESSAGE YOU WANTED TO SEND */
-            else {
+                rxPos = 0;
+                gotRx = 0;
+            } else {
+                len = sprintf(dataOut, "%d\r\n", i);
+                i++;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle, dataOut, len,
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
-                startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
+                startTime = _CP0_GET_COUNT();
             }
             break;
 
