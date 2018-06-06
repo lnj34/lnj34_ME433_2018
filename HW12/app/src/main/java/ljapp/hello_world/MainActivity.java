@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                myTextView.setText("What is the progress? "+progress);
+                myTextView.setText("Progress is: "+progress);
             }
 
             @Override
