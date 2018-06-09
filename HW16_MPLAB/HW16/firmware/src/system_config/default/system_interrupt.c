@@ -70,9 +70,20 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
  
-void __ISR(_USB_1_VECTOR, ipl4AUTO) _IntHandlerUSBInstance0(void)
-{
-    DRV_USBFS_Tasks_ISR(sysObj.drvUSBObject);
+void __ISR(_TIMER_4_VECTOR, IPL4SOFT) Timer4ISR(void) {
+  // code for PI control goes here
+    
+    
+    //Add 500 Hz interrupt
+    T4CONbits.TCKPS = 2; // Timer4 prescaler N=4
+    PR4 = 23999; // 48000000 Hz / 500 Hz / 4 - 1 = 23999 (500Hz from 48MHz clock with 4:1 prescaler)
+    TMR4 = 0; // initial TMR4 count is 0
+    T4CONbits.ON = 1;
+    IPC4bits.T4IP = 4; // priority for Timer 4 
+    IFS0bits.T4IF = 0; // clear interrupt flag for Timer4
+    IEC0bits.T4IE = 1; // enable interrupt for Timer4
+
+  IFS0bits.T4IF = 0; // clear interrupt flag, last line
 }
 
 /*******************************************************************************
