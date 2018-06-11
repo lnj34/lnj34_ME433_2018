@@ -506,15 +506,17 @@ void APP_Tasks(void) {
                 len = sprintf(dataOut, "got: %d\r\n", rxVal);
                 if (rxVal >= 320 && rxVal <= 640){ 
                     
-                    OC1RS = 2000; //Left wheel
+                    OC1RS = 2200; //Left wheel
+                    OC4RS = -(2200/320)*(rxVal-320)+2200;
                 }
                 else if (rxVal < 320 && rxVal > 0) {
-                    
-                    OC1RS = (2000/320)*rxVal;
+                    OC1RS = (2200/320)*rxVal;
+                    OC4RS = 2200;
                     
                 }
                 else
                     OC1RS = 0;
+                    OC4RS = 0;
         
                 
                 //OC4RS = rxVal;
