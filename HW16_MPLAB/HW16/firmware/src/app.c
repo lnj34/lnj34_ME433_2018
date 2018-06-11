@@ -504,6 +504,20 @@ void APP_Tasks(void) {
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
         if (gotRx) {
                 len = sprintf(dataOut, "got: %d\r\n", rxVal);
+                if (rxVal >= 320 && rxVal <= 640){ 
+                    
+                    OC1RS = 2000; //Left wheel
+                }
+                else if (rxVal < 320 && rxVal > 0) {
+                    
+                    OC1RS = (2000/320)*rxVal;
+                    
+                }
+                else
+                    OC1RS = 0;
+        
+                
+                //OC4RS = rxVal;
                 i++;
                 USB_DEVICE_CDC_Write(USB_DEVICE_CDC_INDEX_0,
                         &appData.writeTransferHandle,
