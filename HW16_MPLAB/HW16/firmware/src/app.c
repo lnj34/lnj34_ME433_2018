@@ -507,16 +507,18 @@ void APP_Tasks(void) {
                 if (rxVal >= 320 && rxVal <= 640){ 
                     
                     OC1RS = 2200; //Left wheel
-                    OC4RS = -(2200/320)*(rxVal-320)+2200;
+                    OC4RS = -(2200/320)*rxVal+(2200/320)*640;
                 }
                 else if (rxVal < 320 && rxVal > 0) {
                     OC1RS = (2200/320)*rxVal;
                     OC4RS = 2200;
                     
                 }
-                else
+                else {
                     OC1RS = 0;
                     OC4RS = 0;
+                }
+        
         
                 
                 //OC4RS = rxVal;
