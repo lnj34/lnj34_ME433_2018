@@ -13,23 +13,6 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.Manifest;
-
-import android.app.Activity;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.TextureView;
-import android.view.WindowManager;
-
-
 
 import com.hoho.android.usbserial.driver.CdcAcmSerialDriver;
 import com.hoho.android.usbserial.driver.ProbeTable;
@@ -44,32 +27,32 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
-import static android.graphics.Color.blue;
-import static android.graphics.Color.green;
-import static android.graphics.Color.red;
-import static android.graphics.Color.rgb;
-
-public class MainActivity extends Activity implements TextureView.SurfaceTextureListener  {
+public class MainActivity extends AppCompatActivity {
 
     SeekBar myControl;
     TextView myTextView;
+
     Button button;
     TextView myTextView2;
     ScrollView myScrollView;
     TextView myTextView3;
+
     private UsbManager manager;
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         myControl = (SeekBar) findViewById(R.id.seek1);
 
         myTextView = (TextView) findViewById(R.id.textView01);
         myTextView.setText("Enter whatever you Like!");
+
         myTextView2 = (TextView) findViewById(R.id.textView02);
         myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         myTextView3 = (TextView) findViewById(R.id.textView03);
@@ -80,9 +63,15 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             public void onClick(View v) {
                 myTextView2.setText("value on click is "+myControl.getProgress());
 
+                String sendString = String.valueOf(myControl.getProgress()) + '\n';
+                try {
+                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
+                } catch (IOException e) { }
             }
         });
+
         setMyControlListener();
+
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
     }
 
@@ -216,10 +205,5 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        // Send code to PIC here
-        String sendString = String.valueOf(myControl.getProgress()) + '\n';
-        try {
-            sPort.write(sendString.getBytes(), 10); // 10 is the timeout
-        } catch (IOException e) { }
     }
 }
