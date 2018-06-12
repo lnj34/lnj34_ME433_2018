@@ -31,22 +31,28 @@ public class MainActivity extends AppCompatActivity {
 
     SeekBar myControl;
     TextView myTextView;
+
     Button button;
     TextView myTextView2;
     ScrollView myScrollView;
     TextView myTextView3;
+
     private UsbManager manager;
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         myControl = (SeekBar) findViewById(R.id.seek1);
 
         myTextView = (TextView) findViewById(R.id.textView01);
         myTextView.setText("Enter whatever you Like!");
+
         myTextView2 = (TextView) findViewById(R.id.textView02);
         myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         myTextView3 = (TextView) findViewById(R.id.textView03);
@@ -56,9 +62,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 myTextView2.setText("value on click is "+myControl.getProgress());
+
+                String sendString = String.valueOf(myControl.getProgress()) + '\n';
+                try {
+                    sPort.write(sendString.getBytes(), 10); // 10 is the timeout
+                } catch (IOException e) { }
             }
         });
+
         setMyControlListener();
+
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
     }
 
