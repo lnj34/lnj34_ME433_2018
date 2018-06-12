@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
     private TextView mTextView;
-    private SeekBar myControl;
+    private SeekBar myControla;
 
     public static int slidebar;
     public float COM = 0;
@@ -95,16 +95,16 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             mTextView.setText("no camera permissions");
         }
 
-        myControl = (SeekBar) findViewById(R.id.seek1);
-        setMyControlListener();
+        myControla = (SeekBar) findViewById(R.id.seeka);
+        setMyControlaListener();
 
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
     }
     
 
-    private void setMyControlListener() {
-        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+    private void setMyControlaListener() {
+        myControla.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
 
