@@ -1,26 +1,13 @@
 package ljibr.hw18;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Camera;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.TextureView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -40,18 +27,47 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+//Camera app libraries:
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.TextureView;
+import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.SeekBar;
+
+import java.io.IOException;
+
+import static android.graphics.Color.blue;
 import static android.graphics.Color.green;
 import static android.graphics.Color.red;
 import static android.graphics.Color.rgb;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements TextureView.SurfaceTextureListener {
 
-
+    SeekBar myControl;
+    TextView myTextView;
+    Button button;
+    TextView myTextView2;
+    ScrollView myScrollView;
+    TextView myTextView3;
     private UsbManager manager;
     private UsbSerialPort sPort;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private SerialInputOutputManager mSerialIoManager;
-    private android.hardware.Camera mCamera;
+
+    //Camera app variables:
+    private Camera mCamera;
     private TextureView mTextureView;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
@@ -59,27 +75,46 @@ public class MainActivity extends AppCompatActivity {
     private Canvas canvas = new Canvas(bmp);
     private Paint paint1 = new Paint();
     private TextView mTextView;
-    private SeekBar myControla;
+    //private SeekBar myControla;
     public static int slidebar;
     public float COM = 0;
-    static long prevtime = 0; // for FPS calculation
 
+    static long prevtime = 0; // for FPS calculation
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps the screen from turning off
+        myControl = (SeekBar) findViewById(R.id.seek1);
 
+        myTextView = (TextView) findViewById(R.id.textView01);
+        myTextView.setText("Enter whatever you Like!");
+        myTextView2 = (TextView) findViewById(R.id.textView02);
+        myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
+        myTextView3 = (TextView) findViewById(R.id.textView03);
+        button = (Button) findViewById(R.id.button1);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myTextView2.setText("value on click is "+myControl.getProgress());
+            }
+        });
+        setMyControlListener();
+        //setMyControlaListener();
+        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+        //Camera app on-create stuff:
         mTextView = (TextView) findViewById(R.id.cameraStatus);
 
-// see if the app has permission to use the camera
+        // see if the app has permission to use the camera
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             mSurfaceView = (SurfaceView) findViewById(R.id.surfaceview);
             mSurfaceHolder = mSurfaceView.getHolder();
 
             mTextureView = (TextureView) findViewById(R.id.textureview);
-            mTextureView.setSurfaceTextureListener((TextureView.SurfaceTextureListener) this);
+            mTextureView.setSurfaceTextureListener(this);
 
             // set the paintbrush for writing text on the image
             paint1.setColor(0xffff0000); // red
@@ -90,22 +125,17 @@ public class MainActivity extends AppCompatActivity {
             mTextView.setText("no camera permissions");
         }
 
-        myControla = (SeekBar) findViewById(R.id.seeka);
-        setMyControlaListener();
-
-        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
     }
 
-    private void setMyControlaListener() {
-        myControla.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+    private void setMyControlListener() {
+        myControl.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             int progressChanged = 0;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
-                slidebar = progress;
-
+                myTextView.setText("The value is: "+progress);
             }
 
             @Override
@@ -118,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //Camera app controller seekbar
 
     private final SerialInputOutputManager.Listener mListener =
             new SerialInputOutputManager.Listener() {
@@ -222,9 +253,8 @@ public class MainActivity extends AppCompatActivity {
         String rxString = null;
         try {
             rxString = new String(data, "UTF-8"); // put the data you got into a string
-            //myTextView3.append(rxString);
-            //HorizontalScrollView myScrollView;
-            //myScrollView.fullScroll(View.FOCUS_DOWN);
+            myTextView3.append(rxString);
+            myScrollView.fullScroll(View.FOCUS_DOWN);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -232,13 +262,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             sPort.write(sendString.getBytes(), 10); // 10 is the timeout
         } catch (IOException e) { }
-    }
 
+    }
+    //Camera app Functions
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        mCamera = android.hardware.Camera.open();
-        android.hardware.Camera.Parameters parameters = mCamera.getParameters();
+        mCamera = Camera.open();
+        Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(640, 480);
-        parameters.setFocusMode(android.hardware.Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_INFINITY); // no autofocusing
         //parameters.setAutoExposureLock(true); // keep the white balance constant
         mCamera.setParameters(parameters);
         mCamera.setDisplayOrientation(90); // rotate to portrait mode
@@ -250,14 +281,17 @@ public class MainActivity extends AppCompatActivity {
             // Something bad happened
         }
     }
+
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         // Ignored, Camera does all the work for us
     }
+
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         mCamera.stopPreview();
         mCamera.release();
         return true;
     }
+
     // the important function
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         // every time there is a new Camera preview frame
@@ -265,53 +299,35 @@ public class MainActivity extends AppCompatActivity {
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-            int thresh = 100 - slidebar; // comparison value
+            int thresh = 0; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
-
-            //for (int startY = 0; startY < bmp.getHeight(); startY++) {
             int startY = 200; // which row in the bitmap to analyze to read
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
-            int sum_mr = 0; // the sum of the mass times the radius
-            int sum_m = 0; // the sum of the masses
             // in the row, see if there is more green than red
             for (int i = 0; i < bmp.getWidth(); i++) {
                 if ((green(pixels[i]) - red(pixels[i])) > thresh) {
                     pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
-                    sum_m = sum_m + green(pixels[i]);
-                    sum_mr = sum_mr + i * green(pixels[i]);
-                    //sum_m = sum_m + green(pixels[i])+red(pixels[i])+blue(pixels[i]);
-                    //sum_mr = sum_mr + (green(pixels[i])+red(pixels[i])+blue(pixels[i]))*i;
                 }
             }
-            if (sum_m > 5) {
-                COM = sum_mr / sum_m;
-            } else {
-                COM = 0;
-            }
-            //startY = startY + 3; //Only use some of the y values
-
 
             // update the row
             bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
-            //}
-
         }
 
-
         // draw a circle at some position
-        canvas.drawCircle(COM, 240, 5, paint1); // x position, y position, diameter, color
+        int pos = 50;
+        canvas.drawCircle(pos, 240, 5, paint1); // x position, y position, diameter, color
 
         // write the pos as text
-        canvas.drawText("COM = " + COM, 10, 200, paint1);
+        canvas.drawText("pos = " + pos, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
         // calculate the FPS to see how fast the code is running
         long nowtime = System.currentTimeMillis();
         long diff = nowtime - prevtime;
-        mTextView.setText("COM " + COM);
+        mTextView.setText("FPS " + 1000 / diff);
         prevtime = nowtime;
     }
-
 }
