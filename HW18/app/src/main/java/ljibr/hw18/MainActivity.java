@@ -135,6 +135,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChanged = progress;
+                slidebar = progress;
                 myTextView.setText("The value is: "+progress);
             }
 
@@ -299,35 +300,52 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
         final Canvas c = mSurfaceHolder.lockCanvas();
         if (c != null) {
-            int thresh = 0; // comparison value
+            int thresh = 100 - slidebar; // comparison value
             int[] pixels = new int[bmp.getWidth()]; // pixels[] is the RGBA data
+
+            //for (int startY = 0; startY < bmp.getHeight(); startY++) {
             int startY = 200; // which row in the bitmap to analyze to read
             bmp.getPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
 
+            int sum_mr = 0; // the sum of the mass times the radius
+            int sum_m = 0; // the sum of the masses
             // in the row, see if there is more green than red
             for (int i = 0; i < bmp.getWidth(); i++) {
                 if ((green(pixels[i]) - red(pixels[i])) > thresh) {
                     pixels[i] = rgb(0, 255, 0); // over write the pixel with pure green
+                    sum_m = sum_m + green(pixels[i]);
+                    sum_mr = sum_mr + i * green(pixels[i]);
+                    //sum_m = sum_m + green(pixels[i])+red(pixels[i])+blue(pixels[i]);
+                    //sum_mr = sum_mr + (green(pixels[i])+red(pixels[i])+blue(pixels[i]))*i;
                 }
             }
+            if (sum_m > 5) {
+                COM = sum_mr / sum_m;
+            } else {
+                COM = 0;
+            }
+            //startY = startY + 3; //Only use some of the y values
+
 
             // update the row
             bmp.setPixels(pixels, 0, bmp.getWidth(), 0, startY, bmp.getWidth(), 1);
+            //}
+
         }
 
+
         // draw a circle at some position
-        int pos = 50;
-        canvas.drawCircle(pos, 240, 5, paint1); // x position, y position, diameter, color
+        canvas.drawCircle(COM, 240, 5, paint1); // x position, y position, diameter, color
 
         // write the pos as text
-        canvas.drawText("pos = " + pos, 10, 200, paint1);
+        canvas.drawText("COM = " + COM, 10, 200, paint1);
         c.drawBitmap(bmp, 0, 0, null);
         mSurfaceHolder.unlockCanvasAndPost(c);
 
         // calculate the FPS to see how fast the code is running
         long nowtime = System.currentTimeMillis();
         long diff = nowtime - prevtime;
-        mTextView.setText("FPS " + 1000 / diff);
+        mTextView.setText("COM " + COM);
         prevtime = nowtime;
     }
 }
