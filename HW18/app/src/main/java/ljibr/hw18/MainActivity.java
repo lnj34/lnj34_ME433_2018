@@ -57,7 +57,6 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
 
     SeekBar myControl;
     TextView myTextView;
-    Button button;
     TextView myTextView2;
     ScrollView myScrollView;
     TextView myTextView3;
@@ -92,14 +91,7 @@ public class MainActivity extends Activity implements TextureView.SurfaceTexture
         myTextView2 = (TextView) findViewById(R.id.textView02);
         myScrollView = (ScrollView) findViewById(R.id.ScrollView01);
         myTextView3 = (TextView) findViewById(R.id.textView03);
-        button = (Button) findViewById(R.id.button1);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myTextView2.setText("value on click is "+myControl.getProgress());
-            }
-        });
         setMyControlListener();
         //setMyControlaListener();
         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
